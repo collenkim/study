@@ -1,0 +1,9 @@
+server:
+  port: 9090
+  netty:
+    idle-timeout: 60s # Idle timeout for the server (API 서버라면 설정 필요)
+    connection-timeout: 30s # Connection timeout for the server (API 서버라면 설정 필요)
+
+spring:
+  application:
+    name: webclient
