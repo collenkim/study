@@ -9,7 +9,6 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -136,21 +135,5 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
-
-    @ExceptionHandler(value = .class)
-    public ResponseEntity<ErrorResponse.Res> handleHttpRequestMethodNotSupportedException(
-        HttpRequestMethodNotSupportedException e) {
-
-        ErrorResponse.Res res = ErrorResponse.Res.builder()
-            .httpStatus(ErrorCode.DEFAULT_404.getHttpStatus().value())
-            .code(ErrorCode.DEFAULT_404.getCode())
-            .message(ErrorCode.DEFAULT_404.getMessage())
-            .build();
-
-        log.error("HttpRequestMethodNotSupportedException : {}", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-    }
-
 
 }
