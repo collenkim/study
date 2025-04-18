@@ -7,13 +7,15 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import java.time.Duration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebClientConfig {
-    
+
     /**
      * WebClient Bean
      *
@@ -28,12 +30,16 @@ public class WebClientConfig {
             .responseTimeout(Duration.ofSeconds(30)) //응답 타임아웃 설정 (30초)
             .doOnConnected(connection -> {
                 connection
-                    .addHandlerFirst(new ReadTimeoutHandler(30)) //읽기 타임아웃 설정 (30초)
+                    .addHandlerLast(new ReadTimeoutHandler(30)) //읽기 타임아웃 설정 (30초)
                     .addHandlerLast(new WriteTimeoutHandler(30)) //쓰기 타임아웃 설정 (30초)
                 ;
             });
 
-        return WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
+        return WebClient.builder()
+            .clientConnector(
+                new ReactorClientHttpConnector(httpClient)) // ReactorClientHttpConnector 설정
+            .defaultHeader(HttpHeaders.CONTENT_TYPE,
+                MediaType.APPLICATION_JSON_VALUE) // default Content-Type 헤더 설정
             .build();
     }
 

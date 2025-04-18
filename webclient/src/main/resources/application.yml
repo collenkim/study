@@ -7,3 +7,29 @@ server:
 spring:
   application:
     name: webclient
+  datasource:
+    url: jdbc:h2:mem:db;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    root: DEBUG
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /Users/collenkim/logs/webclient.log
+  logback:
+    rolling-policy:
+      max-file-size: 10MB
+      max-history: 7
