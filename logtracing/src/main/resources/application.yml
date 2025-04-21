@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: log-tracing
+
+server:
+  port: 50018
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
