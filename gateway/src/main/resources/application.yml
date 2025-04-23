@@ -1,0 +1,39 @@
+server:
+  port: 50019
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: log-service
+            uri: http://localhost:50018
+            predicates:
+              - Path=/tracing/v1/log-tracing/**
+            filters:
+              - RewritePath=/tracing/v1/log-tracing/(?<segment>.*), /api/v1/${segment}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+otel:
+  exporter:
+    otlp:
+      protocol: grpc
+      endpoint: http://localhost:4317
+  traces:
+    exporter: otlp
+  logs:
+    exporter: none
