@@ -26,7 +26,16 @@ management:
 
 logging:
   level:
+    root: DEBUG
     org.springframework.cloud.gateway: DEBUG
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss,UTC} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /Users/collenkim/log-tracing/promtail/logs/gateway/app.log
+  logback:
+    rolling-policy:
+      max-file-size: 10MB
+      max-history: 7
 
 otel:
   exporter:
@@ -37,3 +46,4 @@ otel:
     exporter: otlp
   logs:
     exporter: none
+

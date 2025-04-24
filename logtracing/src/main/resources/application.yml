@@ -13,3 +13,25 @@ management:
     web:
       exposure:
         include: health,info,loggers,prometheus
+
+logging:
+  level:
+    root: DEBUG
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss,UTC} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /Users/collenkim/log-tracing/promtail/logs/log-tracing/app.log
+  logback:
+    rolling-policy:
+      max-file-size: 10MB
+      max-history: 7
+
+otel:
+  exporter:
+    otlp:
+      protocol: grpc
+      endpoint: http://localhost:4317
+  traces:
+    exporter: otlp
+  logs:
+    exporter: none
