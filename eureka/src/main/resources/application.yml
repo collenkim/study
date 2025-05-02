@@ -1,0 +1,15 @@
+server:
+  port: 50020
+
+spring:
+  application:
+    name: eureka
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
