@@ -5,6 +5,13 @@ spring:
 server:
   port: 50018
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:50020/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
 management:
   tracing:
     sampling:
@@ -35,3 +42,6 @@ otel:
     exporter: otlp
   logs:
     exporter: none
+  resource:
+    attributes:
+      service.name: logtracing-service
