@@ -26,4 +26,13 @@ public enum ProviderCd {
         throw new UnsupportedProviderException("지원하지 않는 소셜 로그인 제공자입니다: " + provider);
     }
 
+    public static ProviderCd getByProvider(String provider) {
+        for (ProviderCd providerCd : ProviderCd.values()) {
+            if (providerCd.getProvider().equals(provider.toLowerCase())) {
+                return providerCd;
+            }
+        }
+        throw new UnsupportedProviderException("지원하지 않는 소셜 로그인 제공자입니다: " + provider);
+    }
+
 }

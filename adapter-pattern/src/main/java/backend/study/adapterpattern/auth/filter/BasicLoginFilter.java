@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 @RequiredArgsConstructor
 public class BasicLoginFilter extends UsernamePasswordAuthenticationFilter {
-
+s
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
         HttpServletResponse response) {
@@ -23,13 +23,6 @@ public class BasicLoginFilter extends UsernamePasswordAuthenticationFilter {
         // For example, you can use the authenticationManager to authenticate the user
 
         return super.attemptAuthentication(request, response); // Return the authentication result
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-        HttpServletResponse response, Authentication authResult) {
-        super.successfulAuthentication(request, response, authResult);
-        log.info("Authentication successful for user: {}", authResult.getName());
     }
 
 }
