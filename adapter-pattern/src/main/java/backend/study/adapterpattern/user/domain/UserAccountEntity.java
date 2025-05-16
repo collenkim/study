@@ -11,21 +11,22 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @DynamicUpdate
 @Getter
 @Entity
-@Table(name = "user",
+@Table(name = "user_account",
     indexes = {
-        @Index(name = "idx_user_id", columnList = "user_id"),
+        @Index(name = "idx_user_account_user_id", columnList = "user_id"),
+        //h2 db에서는 인덱스 관리를 스키마 단위로 하기 때문에 정정
         @Index(name = "idx_created_at", columnList = "created_at"),
         @Index(name = "idx_deleted_at", columnList = "deleted_at")
     })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity {
+public class UserAccountEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,37 +45,37 @@ public class UserEntity {
     @Column(name = "password")
     private String password;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    private UserEntity(String userId, String userName, String email, String password) {
+    private UserAccountEntity(String userId, String userName, String email, String password) {
         this.userId = userId;
         this.userName = userName;
         this.email = email;
         this.password = password;
     }
 
-    private UserEntity(String userId, String userName, String email) {
+    private UserAccountEntity(String userId, String userName, String email) {
         this.userId = userId;
         this.userName = userName;
         this.email = email;
     }
 
-    public static UserEntity createUserEntity(String userId, String userName, String email,
+    public static UserAccountEntity createUserEntity(String userId, String userName, String email,
         String password) {
-        return new UserEntity(userId, userName, email, password);
+        return new UserAccountEntity(userId, userName, email, password);
     }
 
-    public static UserEntity createUserEntity(String userId, String userName, String email) {
-        return new UserEntity(userId, userName, email);
+    public static UserAccountEntity createUserEntity(String userId, String userName, String email) {
+        return new UserAccountEntity(userId, userName, email);
     }
 
     public void deleteUserI() {

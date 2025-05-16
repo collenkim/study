@@ -1,8 +1,10 @@
 package backend.study.adapterpattern.security.config;
 
-import backend.study.adapterpattern.auth.filter.BasicLoginFilter;
+import backend.study.adapterpattern.security.filter.JwtAuthenticationFilter;
 import backend.study.adapterpattern.security.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import backend.study.adapterpattern.user.repository.UserRepository;
+import backend.study.adapterpattern.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,22 +20,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
+    /**
+     * SecurityFilterChain을 Bean으로 등록
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userRepository);
+
         http
             .csrf(AbstractHttpConfigurer::disable) // REST API에서는 보통 CSRF 미사용
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
                 auth
-                    .requestMatchers("/", "/api/v1/auth/**", "/api/v1/auth/oauth2/**").permitAll()
+                    .requestMatchers("/", "/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated())
-            .addFilterBefore(new BasicLoginFilter(), UsernamePasswordAuthenticationFilter.class)
-            .oauth2Login(oauth ->
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            /*.oauth2Login(oauth ->
                 oauth
                     .authorizationEndpoint(authorize -> authorize.baseUri("/oauth2/authorization"))
                     .redirectionEndpoint(redirect -> redirect.baseUri("/oauth2/callback/*"))
@@ -41,17 +55,29 @@ public class SecurityConfig {
                         userInfo.userService())
                     .successHandler(oAuth2SuccessHandler())
                     .failureHandler(oAuth2FailureHandler())
-            )
+            )*/
             .formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
+    /**
+     * PasswordEncoder를 Bean으로 등록
+     *
+     * @return
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * AuthenticationManager를 Bean으로 등록
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder managerBuilder =

@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class LoginApi {
 
-    @PostMapping("/login")
+    @PostMapping("/token")
     public LoginResponseDto login() {
-
+        return new LoginResponseDto();
     }
 
     @PostMapping("/signup")
     public LoginResponseDto signup() {
-
+        return new LoginResponseDto();
     }
 
     @PostMapping("/logout")
     public LoginResponseDto logout() {
-
+        return new LoginResponseDto();
     }
 
 

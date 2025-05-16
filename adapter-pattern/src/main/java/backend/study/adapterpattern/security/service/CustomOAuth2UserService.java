@@ -1,9 +1,12 @@
 package backend.study.adapterpattern.security.service;
 
+import static backend.study.adapterpattern.login.cd.ProviderCd.getEmail;
+import static backend.study.adapterpattern.login.cd.ProviderCd.getUsername;
+
 import backend.study.adapterpattern.error.exception.OAuth2UserNotRegisteredException;
 import backend.study.adapterpattern.login.cd.ProviderCd;
 import backend.study.adapterpattern.security.dto.CustomUserPrincipal;
-import backend.study.adapterpattern.user.domain.UserIdpEntity;
+import backend.study.adapterpattern.user.domain.UserAccountIdpEntity;
 import backend.study.adapterpattern.user.repository.UserIdpRepository;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +28,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        
+
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
@@ -43,7 +46,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String providerId = attributes.get(userNameAttributeName).toString();
 
         // DB 조회
-        Optional<UserIdpEntity> userIdp =
+        Optional<UserAccountIdpEntity> userIdp =
             userIdpRepository.findByProviderAndProviderId(ProviderCd.getByProvider(registrationId),
                 providerId);
 
@@ -51,11 +54,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             throw new OAuth2UserNotRegisteredException("소셜 가입 정보가 존재하지 않음.");
         }
 
+        String email = getEmail(registrationId, attributes);
+
+        String username = getUsername(registrationId, attributes);
+
         log.info("소셜 로그인: provider={}, providerId={}", registrationId, providerId);
 
         // 최종적으로 반환할 OAuth2User (CustomOAuth2User도 가능)
-        return new CustomUserPrincipal(registrationId, registrationId, registrationId,
-            registrationId, true, attributes);
+        return new CustomUserPrincipal(providerId, username, email,
+            null, true, attributes);
     }
 
 

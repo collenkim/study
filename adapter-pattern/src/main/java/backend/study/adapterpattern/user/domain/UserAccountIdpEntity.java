@@ -17,19 +17,19 @@ import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @DynamicUpdate
 @Getter
 @Entity
-@Table(name = "user_idp",
+@Table(name = "user_account_idp",
     indexes = {
         @Index(name = "idx_provider_id", columnList = "provider_id")
     })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserIdpEntity {
+public class UserAccountIdpEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +42,7 @@ public class UserIdpEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserAccountEntity user;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -50,27 +50,29 @@ public class UserIdpEntity {
     @Column(name = "provider_id", nullable = false)
     private String providerId;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    private UserIdpEntity(ProviderCd provider, UserEntity user, String email, String providerId) {
+    private UserAccountIdpEntity(ProviderCd provider, UserAccountEntity user, String email,
+        String providerId) {
         this.provider = provider;
         this.user = user;
         this.email = email;
         this.providerId = providerId;
     }
 
-    public static UserIdpEntity createUserIdpEntity(ProviderCd provider, UserEntity user,
+    public static UserAccountIdpEntity createUserIdpEntity(ProviderCd provider,
+        UserAccountEntity user,
         String email, String providerId) {
-        return new UserIdpEntity(provider, user, email, providerId);
+        return new UserAccountIdpEntity(provider, user, email, providerId);
     }
 
     public void deleteUserIdp() {

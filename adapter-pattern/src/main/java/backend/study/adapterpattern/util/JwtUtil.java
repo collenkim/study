@@ -6,7 +6,6 @@ import backend.study.adapterpattern.error.exception.InvalidTokenException;
 import backend.study.adapterpattern.error.exception.MalformedTokenException;
 import backend.study.adapterpattern.error.exception.UnknownTokenException;
 import backend.study.adapterpattern.error.exception.UnsupportedTokenException;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -45,20 +44,35 @@ public class JwtUtil {
     }
 
     /**
+     * JWT 토큰에서 사용자 ID 추출
+     *
+     * @param token
+     * @return
+     */
+    public String getUserIdFromToken(String token) {
+        return Jwts.parser()
+            .verifyWith(signingKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload().getSubject();
+    }
+
+    /**
      * JWT 토큰 검증 메서드
      *
      * @param token
      * @return
      */
-    public Claims validateToken(String token) {
+    public boolean validateToken(String token) {
 
         try {
 
-            return Jwts.parser()
+            Jwts.parser()
                 .verifyWith(signingKey) // 서명 검증
                 .build()
-                .parseSignedClaims(token) // 토큰 파싱
-                .getPayload();
+                .parseSignedClaims(token); // 토큰 파싱
+
+            return true;
 
         } catch (ExpiredJwtException e) {
             throw new ExpiredTokenException("Expired JWT token", e);
