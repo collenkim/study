@@ -30,7 +30,7 @@ public class JwtUtil {
     /**
      * JWT 토큰 생성
      */
-    public String generateToken(String username) {
+    public String accessToken(String username) {
 
         Date currentAt = new Date();
         Date expiredAt = new Date(currentAt.getTime() + Duration.ofMinutes(30).toMillis());
@@ -39,6 +39,27 @@ public class JwtUtil {
             .subject(username)
             .issuedAt(currentAt)
             .expiration(expiredAt)
+            .claim("type", "access")
+            .signWith(signingKey, Jwts.SIG.HS256)
+            .compact();
+    }
+
+    /**
+     * JWT 리프레시 토큰 생성
+     *
+     * @param username
+     * @return
+     */
+    public String refreshToken(String username) {
+
+        Date currentAt = new Date();
+        Date expiredAt = new Date(currentAt.getTime() + Duration.ofDays(7).toMillis());
+
+        return Jwts.builder()
+            .subject(username)
+            .issuedAt(currentAt)
+            .expiration(expiredAt)
+            .claim("type", "refresh")
             .signWith(signingKey, Jwts.SIG.HS256)
             .compact();
     }

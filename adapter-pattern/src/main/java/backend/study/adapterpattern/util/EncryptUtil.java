@@ -16,4 +16,8 @@ public class EncryptUtil {
         return passwordEncoder.encode(inputText);
     }
 
+    public boolean matchesBCrypt(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
+
 }

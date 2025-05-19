@@ -2,7 +2,9 @@ package backend.study.adapterpattern.login.api;
 
 import backend.study.adapterpattern.login.dto.LoginRequestDto;
 import backend.study.adapterpattern.login.dto.LoginResponseDto;
+import backend.study.adapterpattern.login.dto.RegisterRequestDto;
 import backend.study.adapterpattern.login.service.LoginService;
+import backend.study.adapterpattern.user.service.UserAccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginApi {
 
     private final LoginService loginService;
+    private final UserAccountService userAccountService;
 
-    @PostMapping("/token")
-    public ResponseEntity<String> token(
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(
         @RequestBody @Valid LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(loginService.getToken(loginRequestDto));
+        return ResponseEntity.ok(loginService.login(loginRequestDto));
     }
 
     @PostMapping("/signup")
-    public LoginResponseDto signup() {
-        return new LoginResponseDto();
+    public ResponseEntity<?> signup(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
+        return ResponseEntity.ok(userAccountService.register(registerRequestDto));
     }
 
     @PostMapping("/logout")

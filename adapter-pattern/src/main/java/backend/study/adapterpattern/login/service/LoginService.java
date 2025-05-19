@@ -1,6 +1,8 @@
 package backend.study.adapterpattern.login.service;
 
+import backend.study.adapterpattern.login.cd.ProviderCd;
 import backend.study.adapterpattern.login.dto.LoginRequestDto;
+import backend.study.adapterpattern.login.dto.LoginResponseDto;
 import backend.study.adapterpattern.user.domain.UserAccountEntity;
 import backend.study.adapterpattern.user.repository.UserAccountRepository;
 import backend.study.adapterpattern.util.EncryptUtil;
@@ -18,18 +20,34 @@ public class LoginService {
     private final EncryptUtil encryptUtil;
     private final UserAccountRepository userAccountRepository;
 
-    public String getToken(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
-        String encryptPassword = encryptUtil.encryptBCrypt(loginRequestDto.getPassword());
+        isValidLoginUser(loginRequestDto);
 
-        Optional<UserAccountEntity> userAccount = userAccountRepository.findByUserIdAndPassword(
-            loginRequestDto.getUsername(),
-            encryptPassword);
+        String accessToken = jwtUtil.accessToken(loginRequestDto.getUsername());
+        String refreshToken = jwtUtil.refreshToken(loginRequestDto.getUsername());
+        return new LoginResponseDto(accessToken, refreshToken, ProviderCd.BASIC.getProvider());
+    }
+
+    /**
+     * 로그인 유저 검증
+     *
+     * @param loginRequestDto
+     */
+    private void isValidLoginUser(LoginRequestDto loginRequestDto) {
+
+        Optional<UserAccountEntity> userAccount = userAccountRepository.findByUserId(
+            loginRequestDto.getUsername());
 
         if (userAccount.isEmpty()) {
             throw new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다");
+        } else {
+            if (!encryptUtil.matchesBCrypt(loginRequestDto.getPassword(),
+                userAccount.get().getPassword())) {
+                throw new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다");
+            }
         }
 
-        return jwtUtil.generateToken(loginRequestDto.getUsername());
     }
+
 }
