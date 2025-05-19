@@ -4,8 +4,10 @@ import backend.study.adapterpattern.user.domain.UserAccountEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserAccountEntity, Long> {
+public interface UserAccountRepository extends JpaRepository<UserAccountEntity, Long> {
 
     Optional<UserAccountEntity> findByUserId(String userId);
+
+    Optional<UserAccountEntity> findByUserIdAndPassword(String userId, String encryptPassword);
 
 }

@@ -2,7 +2,7 @@ package backend.study.adapterpattern.security.service;
 
 import backend.study.adapterpattern.security.dto.CustomUserPrincipal;
 import backend.study.adapterpattern.user.domain.UserAccountEntity;
-import backend.study.adapterpattern.user.repository.UserRepository;
+import backend.study.adapterpattern.user.repository.UserAccountRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // 데이터베이스에서 이메일을 기반으로 사용자 정보를 조회
-        Optional<UserAccountEntity> user = userRepository.findByUserId(username);
+        Optional<UserAccountEntity> user = userAccountRepository.findByUserId(username);
 
         if (user.isEmpty()) {
             // 사용자가 없을 경우 예외처리

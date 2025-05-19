@@ -14,6 +14,7 @@ public enum ProviderCd {
     APPLE("apple", "애플"),
     NAVER("naver", "네이버"),
     KAKAO("kakao", "카카오"),
+    BASIC("basic", "기본"),
     ;
 
     private final String provider;

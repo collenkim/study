@@ -2,7 +2,7 @@ package backend.study.adapterpattern.security.config;
 
 import backend.study.adapterpattern.security.filter.JwtAuthenticationFilter;
 import backend.study.adapterpattern.security.service.CustomUserDetailsService;
-import backend.study.adapterpattern.user.repository.UserRepository;
+import backend.study.adapterpattern.user.repository.UserAccountRepository;
 import backend.study.adapterpattern.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
 
     /**
      * SecurityFilterChain을 Bean으로 등록
@@ -37,7 +37,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userRepository);
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil,
+            userAccountRepository);
 
         http
             .csrf(AbstractHttpConfigurer::disable) // REST API에서는 보통 CSRF 미사용

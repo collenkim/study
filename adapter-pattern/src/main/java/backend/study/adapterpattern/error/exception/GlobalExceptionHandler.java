@@ -2,10 +2,15 @@ package backend.study.adapterpattern.error.exception;
 
 import backend.study.adapterpattern.error.cd.ErrorCode;
 import backend.study.adapterpattern.error.dto.ErrorResponseDto;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -136,7 +141,7 @@ public class GlobalExceptionHandler {
             .build();
 
         log.error("BadCredentialsException : {}", ex.getMessage());
-
+        
         return new ResponseEntity<>(res, ErrorCode.BAD_CREDENTIAL.getHttpStatus());
     }
 
@@ -153,4 +158,45 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(res, ErrorCode.NOT_FOUND_USER.getHttpStatus());
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(
+        HttpMessageNotReadableException ex) {
+
+        ErrorResponseDto res = ErrorResponseDto.builder()
+            .errorCode(ErrorCode.INVALID_REQUEST_BODY.getCode())
+            .errorMessage(ErrorCode.INVALID_REQUEST_BODY.getMessage())
+            .build();
+
+        log.error("HttpMessageNotReadableException : {}", ex.getMessage());
+
+        return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException ex) {
+
+        BindingResult bindingResult = ex.getBindingResult();
+
+        String errorMessage = bindingResult.getAllErrors().stream()
+            .map(error -> {
+                if (error instanceof FieldError) {
+                    FieldError fieldError = (FieldError) error;
+                    return fieldError.getField() + ": " + fieldError.getDefaultMessage();
+                }
+                return error.getDefaultMessage();
+            })
+            .collect(Collectors.joining(", "));
+
+        log.error("MethodArgumentNotValidException : {}", ex.getMessage());
+
+        ErrorResponseDto res = ErrorResponseDto.builder()
+            .errorCode(ErrorCode.INVALID_INPUT.getCode())
+            .errorMessage(errorMessage)
+            .build();
+
+        return ResponseEntity.badRequest().body(res);
+    }
+
 }

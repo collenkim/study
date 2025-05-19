@@ -1,7 +1,7 @@
 package backend.study.adapterpattern.security.filter;
 
 import backend.study.adapterpattern.user.domain.UserAccountEntity;
-import backend.study.adapterpattern.user.repository.UserRepository;
+import backend.study.adapterpattern.user.repository.UserAccountRepository;
 import backend.study.adapterpattern.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
             if (jwtUtil.validateToken(token)) {
                 String userId = jwtUtil.getUserIdFromToken(token);
-                Optional<UserAccountEntity> user = userRepository.findByUserId(userId);
+                Optional<UserAccountEntity> user = userAccountRepository.findByUserId(userId);
 
                 if (user.isPresent()) {
                     UsernamePasswordAuthenticationToken authentication =
