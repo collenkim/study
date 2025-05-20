@@ -5,7 +5,7 @@ import backend.study.adapterpattern.user.domain.UserAccountIdpEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserIdpRepository extends JpaRepository<UserAccountIdpEntity, Long> {
+public interface UserAccountIdpRepository extends JpaRepository<UserAccountIdpEntity, Long> {
 
     Optional<UserAccountIdpEntity> findByProviderAndProviderId(ProviderCd provider,
         String providerId);

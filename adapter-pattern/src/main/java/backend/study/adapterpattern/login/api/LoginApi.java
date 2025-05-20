@@ -29,7 +29,8 @@ public class LoginApi {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
-        return ResponseEntity.ok(userAccountService.register(registerRequestDto));
+        userAccountService.register(registerRequestDto);
+        return ResponseEntity.ok("회원가입 성공");
     }
 
     @PostMapping("/logout")

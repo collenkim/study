@@ -1,6 +1,6 @@
 package backend.study.adapterpattern.oauth2.handler;
 
-import backend.study.adapterpattern.user.repository.UserIdpRepository;
+import backend.study.adapterpattern.user.repository.UserAccountIdpRepository;
 import backend.study.adapterpattern.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
-    private final UserIdpRepository userIdpRepository;
+    private final UserAccountIdpRepository userAccountIdpRepository;
 
     /**
      * OAuth2 로그인 성공 시 호출되는 핸들러

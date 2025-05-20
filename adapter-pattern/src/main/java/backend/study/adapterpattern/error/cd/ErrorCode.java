@@ -17,7 +17,8 @@ public enum ErrorCode {
     UNKNOWN_TOKEN(HttpStatus.BAD_REQUEST, "C_007", "알수 없는 토큰 에러 입니다."),
     INVALID_REQUEST_BODY(HttpStatus.BAD_REQUEST, "C_008", "요청 본문 형식이 올바르지 않습니다."),
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "C_009", "입력값이 유효하지 않습니다."),
-    
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C_010", "이미 존재하는 사용자입니다."),
+
     BAD_CREDENTIAL(HttpStatus.UNAUTHORIZED, "U_001", "아이디 또는 비밀번호가 올바르지 않습니다."),
     NOT_FOUND_USER(HttpStatus.UNAUTHORIZED, "U_002", "아이디 또는 비밀번호가 올바르지 않습니다."),
 

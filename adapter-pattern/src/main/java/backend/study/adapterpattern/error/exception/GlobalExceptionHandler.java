@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
             .build();
 
         log.error("BadCredentialsException : {}", ex.getMessage());
-        
+
         return new ResponseEntity<>(res, ErrorCode.BAD_CREDENTIAL.getHttpStatus());
     }
 
@@ -197,6 +197,20 @@ public class GlobalExceptionHandler {
             .build();
 
         return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserAlreadyExistsException(
+        UserAlreadyExistsException ex) {
+
+        ErrorResponseDto res = ErrorResponseDto.builder()
+            .errorCode(ErrorCode.USER_ALREADY_EXISTS.getCode())
+            .errorMessage(ErrorCode.USER_ALREADY_EXISTS.getMessage())
+            .build();
+
+        log.error("UserAlreadyExistsException : {}", ex.getMessage());
+
+        return new ResponseEntity<>(res, ErrorCode.USER_ALREADY_EXISTS.getHttpStatus());
     }
 
 }

@@ -7,7 +7,7 @@ import backend.study.adapterpattern.error.exception.OAuth2UserNotRegisteredExcep
 import backend.study.adapterpattern.login.cd.ProviderCd;
 import backend.study.adapterpattern.security.dto.CustomUserPrincipal;
 import backend.study.adapterpattern.user.domain.UserAccountIdpEntity;
-import backend.study.adapterpattern.user.repository.UserIdpRepository;
+import backend.study.adapterpattern.user.repository.UserAccountIdpRepository;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final UserIdpRepository userIdpRepository;
+    private final UserAccountIdpRepository userAccountIdpRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -47,7 +47,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // DB 조회
         Optional<UserAccountIdpEntity> userIdp =
-            userIdpRepository.findByProviderAndProviderId(ProviderCd.getByProvider(registrationId),
+            userAccountIdpRepository.findByProviderAndProviderId(
+                ProviderCd.getByProvider(registrationId),
                 providerId);
 
         if (userIdp.isEmpty()) {

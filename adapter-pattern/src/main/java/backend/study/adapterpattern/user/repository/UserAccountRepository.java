@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserAccountRepository extends JpaRepository<UserAccountEntity, Long> {
 
     Optional<UserAccountEntity> findByUserId(String userId);
-
-    Optional<UserAccountEntity> findByUserIdAndPassword(String userId, String encryptPassword);
-
+    
 }
